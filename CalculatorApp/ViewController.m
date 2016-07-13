@@ -41,7 +41,6 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
-//Method to print the numbers at Display Label
 -(void)DisplayInputValue:(NSString *)displayText
 {
     NSString *CommaText;
@@ -49,13 +48,14 @@
     [displayLabel setText:CommaText];
 }
 
-//print the calculated result on display label
 -(void)DisplayCalculationValue
 {
     NSString *displayText;
     displayText = [NSString stringWithFormat:@"%g",totalCurValue];
     [self DisplayInputValue:displayText];
     curInputValue=@"";
+    NSLog(@"totalCurValue is " @"%f", totalCurValue);
+    NSLog(@"curStatusCode is " @"%u", curStatusCode);
 }
 
 //reset calculator
@@ -124,11 +124,119 @@
     return returnString;
 }
 
+//method called when number or decimal point is pressed
 - (IBAction) digitPressed:(UIButton *)sender
 {
     NSString *numPoint = [[sender titleLabel] text];
     curInputValue = [curInputValue stringByAppendingFormat:numPoint];
     [self DisplayInputValue:curInputValue];
+}
+
+//method called when function button is pressed
+- (IBAction) operationPressed:(UIButton *)sender
+{
+    NSString *operationText = [[sender titleLabel] text];
+    
+    if([@"+"isEqualToString:operationText])
+    {
+        [self Calculation:curStatusCode CurStatusCode:STATUS_PLUS];
+    }
+    else if([@"-"isEqualToString:operationText])
+    {
+        [self Calculation:curStatusCode CurStatusCode:STATUS_MINUS];
+    }
+    else if([@"x"isEqualToString:operationText])
+    {
+        [self Calculation:curStatusCode CurStatusCode:STATUS_MULTIPLY];
+    }
+    else if([@"/"isEqualToString:operationText])
+    {
+        [self Calculation:curStatusCode CurStatusCode:STATUS_DIVISION];
+    }
+    else if([@"c"isEqualToString:operationText])
+    {
+        [self ClearCalculation];
+    }
+    else if([@"="isEqualToString:operationText])
+    {
+        [self Calculation:curStatusCode CurStatusCode:STATUS_RETURN];
+    }
+    
+}
+//method to solve current status
+//Calculation method
+//first StatusCode shows the method to call and cStatusCode shows the status code after the calculation is completed.
+-(void) Calculation:(kStatusCode)StatusCode CurStatusCode:(kStatusCode)cStatusCode;
+{
+    switch(StatusCode)
+    {
+        case STATUS_DEFAULT:
+            [self DefaultCalculation];
+            break;
+        case STATUS_DIVISION:
+            [self DivisionCalculation];
+            break;
+        case STATUS_MULTIPLY:
+            [self MultiplyCalculation];
+            break;
+        case STATUS_MINUS:
+            [self MinusCalculation];
+            break;
+        case STATUS_PLUS:
+            [self PlusCalculation];
+            break;
+        case STATUS_RETURN:
+            [self ReturnCalculation];
+            break;
+    }
+    curStatusCode = cStatusCode;
+}
+
+-(void) DefaultCalculation
+{
+    curValue = [curInputValue doubleValue];
+    totalCurValue = curValue;
+    [self DisplayCalculationValue];
+}
+
+-(void) PlusCalculation
+{
+    curValue = [curInputValue doubleValue];
+    totalCurValue = totalCurValue + curValue;
+    [self DisplayCalculationValue];
+}
+
+-(void) MinusCalculation
+{
+    curValue = [curInputValue doubleValue];
+    totalCurValue = totalCurValue - curValue;
+    [self DisplayCalculationValue];
+}
+
+
+-(void) MultiplyCalculation
+{
+    curValue = [curInputValue doubleValue];
+    totalCurValue = totalCurValue * curValue;
+    [self DisplayCalculationValue];
+}
+
+
+-(void) DivisionCalculation
+{
+    curValue = [curInputValue doubleValue];
+    totalCurValue = totalCurValue / curValue;
+    [self DisplayCalculationValue];
+}
+
+-(void) ReturnCalculation
+{
+    curValue = [curInputValue doubleValue];
+    totalCurValue = curValue;
+    NSString *displayText;
+    displayText = [NSString stringWithFormat:@"%g",totalCurValue];
+    [self DisplayInputValue:displayText];
+
 }
 
 
