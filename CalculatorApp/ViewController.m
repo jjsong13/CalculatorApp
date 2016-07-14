@@ -43,6 +43,8 @@
 
 -(void)DisplayInputValue:(NSString *)displayText
 {
+    NSLog(@"*DisplayInputValue method called.");
+
     NSString *CommaText;
     CommaText = [self ConvertComma:displayText];
     [displayLabel setText:CommaText];
@@ -50,17 +52,20 @@
 
 -(void)DisplayCalculationValue
 {
+    NSLog(@"*DisplayCalculationValue method called.");
+
     NSString *displayText;
     displayText = [NSString stringWithFormat:@"%g",totalCurValue];
     [self DisplayInputValue:displayText];
     curInputValue=@"";
-    NSLog(@"totalCurValue is " @"%f", totalCurValue);
-    NSLog(@"curStatusCode is " @"%u", curStatusCode);
+    NSLog(@"totalCurValue is " @"%f" @" and curStatusCode is " @"%u", totalCurValue, curStatusCode);
+    
 }
 
 //reset calculator
 -(void) ClearCalculation
 {
+    NSLog(@"*ClearCalculation method called.");
     curInputValue = @"";
     curValue=0;
     totalCurValue=0;
@@ -68,6 +73,7 @@
     [self DisplayInputValue:curInputValue];
     
     curStatusCode=STATUS_DEFAULT;
+
 }
 
 -(NSString *) ConvertComma:(NSString *)data
@@ -127,38 +133,57 @@
 //method called when number or decimal point is pressed
 - (IBAction) digitPressed:(UIButton *)sender
 {
+    NSLog(@"*digitPressed method called.");
     NSString *numPoint = [[sender titleLabel] text];
-    curInputValue = [curInputValue stringByAppendingFormat:numPoint];
+    if (numPoint != nil) {
+        curInputValue = [curInputValue stringByAppendingFormat:numPoint];
+    }
     [self DisplayInputValue:curInputValue];
+
 }
 
 //method called when function button is pressed
 - (IBAction) operationPressed:(UIButton *)sender
 {
+
+    NSLog(@"*operationPressed method called and curInputValue is " @"%@", curInputValue);
+
     NSString *operationText = [[sender titleLabel] text];
+    
+    if ([curInputValue  isEqual: @""]) {
+//        Float64 myfloat = [totalCurValue floatValue];
+//        myfloat = totalCurValue;
+        NSLog(@"curInputValue is nil");
+    }
     
     if([@"+"isEqualToString:operationText])
     {
+        NSLog(@"STATUS_PLUS is set");
         [self Calculation:curStatusCode CurStatusCode:STATUS_PLUS];
     }
     else if([@"-"isEqualToString:operationText])
     {
+        NSLog(@"STATUS_MINUS is set");
         [self Calculation:curStatusCode CurStatusCode:STATUS_MINUS];
     }
     else if([@"x"isEqualToString:operationText])
     {
+        NSLog(@"STATUS_MULTIPLY is set");
         [self Calculation:curStatusCode CurStatusCode:STATUS_MULTIPLY];
     }
     else if([@"/"isEqualToString:operationText])
     {
+        NSLog(@"STATUS_DIVISION is set");
         [self Calculation:curStatusCode CurStatusCode:STATUS_DIVISION];
     }
     else if([@"c"isEqualToString:operationText])
     {
+        NSLog(@"c is set");
         [self ClearCalculation];
     }
     else if([@"="isEqualToString:operationText])
     {
+        NSLog(@"STATUS_RETURN is set");
         [self Calculation:curStatusCode CurStatusCode:STATUS_RETURN];
     }
     
@@ -186,7 +211,7 @@
             [self PlusCalculation];
             break;
         case STATUS_RETURN:
-            [self ReturnCalculation];
+            [self DefaultCalculation];
             break;
     }
     curStatusCode = cStatusCode;
@@ -194,13 +219,16 @@
 
 -(void) DefaultCalculation
 {
+    NSLog(@"DefaultCalculation method is called. curInputValue is "  @"%@" @" and totalCurValue is " @"%f",curInputValue, totalCurValue);
     curValue = [curInputValue doubleValue];
     totalCurValue = curValue;
     [self DisplayCalculationValue];
+    
 }
 
 -(void) PlusCalculation
 {
+    NSLog(@"PlusCalculation method is called. curInputValue is "  @"%@" @" and totalCurValue is " @"%f",curInputValue, totalCurValue);
     curValue = [curInputValue doubleValue];
     totalCurValue = totalCurValue + curValue;
     [self DisplayCalculationValue];
@@ -208,6 +236,8 @@
 
 -(void) MinusCalculation
 {
+    NSLog(@"MinusCalculation method is called");
+    
     curValue = [curInputValue doubleValue];
     totalCurValue = totalCurValue - curValue;
     [self DisplayCalculationValue];
@@ -216,6 +246,7 @@
 
 -(void) MultiplyCalculation
 {
+    NSLog(@"MultiplyCalculation method is called");
     curValue = [curInputValue doubleValue];
     totalCurValue = totalCurValue * curValue;
     [self DisplayCalculationValue];
@@ -224,20 +255,23 @@
 
 -(void) DivisionCalculation
 {
+    NSLog(@"DivisionCalculation method is called");
     curValue = [curInputValue doubleValue];
     totalCurValue = totalCurValue / curValue;
     [self DisplayCalculationValue];
 }
 
--(void) ReturnCalculation
-{
-    curValue = [curInputValue doubleValue];
-    totalCurValue = curValue;
-    NSString *displayText;
-    displayText = [NSString stringWithFormat:@"%g",totalCurValue];
-    [self DisplayInputValue:displayText];
-
-}
+//-(void) ReturnCalculation
+//{
+//    NSLog(@"*ReturnCalculation method called and curInputValue is   " @"%@", curInputValue);
+//    
+//    
+////    curValue = [curInputValue doubleValue];
+////    totalCurValue = curValue;
+////    NSString *displayText;
+////    displayText = [NSString stringWithFormat:@"%g",totalCurValue];
+////    [self DisplayInputValue:displayText];
+//}
 
 
 @end
