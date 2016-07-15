@@ -137,6 +137,7 @@
     NSString *numPoint = [[sender titleLabel] text];
     if (numPoint != nil) {
         curInputValue = [curInputValue stringByAppendingFormat:numPoint];
+        
     }
     [self DisplayInputValue:curInputValue];
 
@@ -151,9 +152,8 @@
     NSString *operationText = [[sender titleLabel] text];
     
     if ([curInputValue  isEqual: @""]) {
-//        Float64 myfloat = [totalCurValue floatValue];
-//        myfloat = totalCurValue;
-        NSLog(@"curInputValue is nil");
+        NSString *myString = [NSString stringWithFormat:@"%f", totalCurValue];
+        curInputValue = myString;
     }
     
     if([@"+"isEqualToString:operationText])
@@ -260,18 +260,5 @@
     totalCurValue = totalCurValue / curValue;
     [self DisplayCalculationValue];
 }
-
-//-(void) ReturnCalculation
-//{
-//    NSLog(@"*ReturnCalculation method called and curInputValue is   " @"%@", curInputValue);
-//    
-//    
-////    curValue = [curInputValue doubleValue];
-////    totalCurValue = curValue;
-////    NSString *displayText;
-////    displayText = [NSString stringWithFormat:@"%g",totalCurValue];
-////    [self DisplayInputValue:displayText];
-//}
-
 
 @end
